@@ -48,7 +48,7 @@ const Tables = ({ userdata ,deleteUser,userGet,handlePrevious,handleNext,page,pa
                     userdata.map((element, index) => {
                       return (
                         <>
-                          <tr>
+                          <tr key={index}>
                             <td>{index + 1 + (page - 1)*4}</td>
 
                             <td>{element.fname + " " + element.lname}</td>
