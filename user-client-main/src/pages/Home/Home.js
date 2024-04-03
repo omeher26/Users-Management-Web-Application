@@ -4,108 +4,107 @@ import Button from "react-bootstrap/esm/Button";
 import Dropdown from "react-bootstrap/Dropdown";
 import Tables from "../../components/Tables/Tables";
 import { useNavigate } from "react-router-dom";
-import Spiner from "../../components/Spiner/Spiner"
+import Spiner from "../../components/Spiner/Spiner";
 import "./home.css";
-import Alert from 'react-bootstrap/Alert';
-import { addData, dltdata, updateData } from "../../components/context/ContextProvider";
-import {usergetfunc,deletefunc, exporttocsvfunc} from "../../services/Apis";
+import Alert from "react-bootstrap/Alert";
+import {
+  addData,
+  dltdata,
+  updateData,
+} from "../../components/context/ContextProvider";
+import { usergetfunc, deletefunc, exporttocsvfunc } from "../../services/Apis";
 import { toast } from "react-toastify";
 
-
-
 const Home = () => {
+  const [userdata, setUserData] = useState([]);
 
-  const[userdata,setUserData] = useState([]);
+  const [showspin, setShowSpin] = useState(true);
 
-  const [showspin,setShowSpin] = useState(true)
+  const [search, setSearch] = useState("");
 
-  const [search,setSearch] = useState("");
+  const [gender, setGender] = useState("All");
 
-  const [gender,setGender] = useState("All");
+  const [status, setStatus] = useState("All");
 
-  const [status,setStatus] = useState("All");
+  const [sort, setSort] = useState("new");
 
-  const [sort,setSort] = useState("new");
+  const [page, setPage] = useState(1);
 
-  const [page,setPage] = useState(1);
+  const [pageCount, setPageCount] = useState(0);
 
-  const [pageCount,setPageCount] =useState(0);
+  const { useradd, setUseradd } = useContext(addData);
 
-  const {useradd,setUseradd} = useContext(addData);
+  const { update, setUpdate } = useContext(updateData);
 
-  const {update,setUpdate} = useContext(updateData);
-
-  const {deletedata,setDltdata} = useContext(dltdata);
+  const { deletedata, setDltdata } = useContext(dltdata);
 
   const navigate = useNavigate();
 
   const adduser = () => {
-    navigate("/register")
-  }
+    navigate("/register");
+  };
 
   // get user
-  const userGet = async()=>{
-    const response = await usergetfunc(search,gender,status,sort,page);
-    
+  const userGet = async () => {
+    const response = await usergetfunc(search, gender, status, sort, page);
+
     if (response.status === 200) {
-      setUserData(response.data.usersdata)
-      setPageCount(response.data.Pagination.pageCount)
+      setUserData(response.data.usersdata);
+      setPageCount(response.data.Pagination.pageCount);
     } else {
-      console.log("error for get user data")
+      console.log("error for get user data");
     }
-  }
+  };
 
   // user delete
-  const deleteUser = async(id) => {
-    
-    const response = await deletefunc(id)
-    if(response.status === 200){
+  const deleteUser = async (id) => {
+    const response = await deletefunc(id);
+    if (response.status === 200) {
       userGet();
-      setDltdata(response.data)
-    }else{
-      toast.error("error")
+      setDltdata(response.data);
+    } else {
+      toast.error("error");
     }
-  }
+  };
 
   // export user
-  const exportuser = async()=>{
+  const exportuser = async () => {
     const response = await exporttocsvfunc();
-    if(response.status === 200){
-      window.open(response.data.downloadUrl,"black")
-    }else{
-      toast.error("error ! ")
+    if (response.status === 200) {
+      window.open(response.data.downloadUrl, "black");
+    } else {
+      toast.error("error ! ");
     }
-  }
+  };
 
   // pagination
   // handle pre btn
-  const handlePrevious = () =>{
-    setPage(()=>{
-      if(page === 1) return page;
-      return page - 1
-    })
-  }
+  const handlePrevious = () => {
+    setPage(() => {
+      if (page === 1) return page;
+      return page - 1;
+    });
+  };
 
   // handle next btn
-  const handleNext = ()=>{
-    setPage(()=>{
-      if(page === pageCount) return page;
-      return page + 1
-    })
-  }
-
+  const handleNext = () => {
+    setPage(() => {
+      if (page === pageCount) return page;
+      return page + 1;
+    });
+  };
 
   useEffect(() => {
-    userGet()
+    userGet();
     setTimeout(() => {
-      setShowSpin(false)
-    },1200)
-  },[search,gender,status,sort,page])
+      setShowSpin(false);
+    }, 1200);
+  }, [search, gender, status, sort, page]);
 
   return (
     <>
       {useradd ? (
-        <Alert variant="success" onClose={() => setUseradd("")} >
+        <Alert variant="success" onClose={() => setUseradd("")}>
           {useradd.fname.toUpperCase()} Succesfully Added{" "}
           <div className="d-flex justify-content-end">
             <Button onClick={() => setUseradd(false)} variant="outline-success">
@@ -113,7 +112,9 @@ const Home = () => {
             </Button>
           </div>
         </Alert>
-      ) : ( "" )}
+      ) : (
+        ""
+      )}
 
       {/* {
       update ? <Alert variant="primary" onClose={() => setUpdate("")} dismissible >{update.fname.toUpperCase()} Succesfully Updated </Alert>:""
@@ -128,10 +129,12 @@ const Home = () => {
             </Button>
           </div>
         </Alert>
-      ) : ( "" )}
+      ) : (
+        ""
+      )}
 
       {deletedata ? (
-        <Alert variant="danger" onClose={() => setDltdata("")} >
+        <Alert variant="danger" onClose={() => setDltdata("")}>
           {deletedata.fname.toUpperCase()} Succesfully Deleted{" "}
           <div className="d-flex justify-content-end">
             <Button onClick={() => setDltdata(false)} variant="outline-success">
@@ -139,12 +142,14 @@ const Home = () => {
             </Button>
           </div>
         </Alert>
-      ) : (" ")}
+      ) : (
+        " "
+      )}
 
       <div className="container ">
         <div className="main_div">
           {/* search add btn */}
-          <div className="search_add  mt-4 d-flex justify-content-between ">
+          <div className="search_add  mt-4 d-flex justify-content-between flex-wrap">
             <div className="search col-lg-4 col-sm-12">
               <Form className="d-flex">
                 <Form.Control
@@ -160,7 +165,7 @@ const Home = () => {
               </Form>
             </div>
 
-            <div className="add_btn">
+            <div className="add_btn mt-3 mt-lg-0">
               <Button variant="primary" onClick={adduser}>
                 <i class="fa-solid fa-plus"></i>&nbsp; Add User
               </Button>
@@ -169,15 +174,19 @@ const Home = () => {
 
           {/* export , gender, status */}
 
+          {/* <div className="filter_div mt-5 d-flex justify-content-between flex-wrap "> */}
           <div className="filter_div mt-5 d-flex justify-content-between flex-wrap ">
-            <div className="export_csv">
+
+            {/* <div className="export_csv"> */}
+            <div className="col-lg-3 col-md-6 col-xm-12">
               <Button className="export_btn" onClick={exportuser}>
                 Export To Csv
               </Button>
             </div>
 
-            <div className="filter_gender">
-              <div className="filter">
+            {/* <div className="filter_gender"> */}
+              {/* <div className="filter"> */}
+              <div className="col-lg-3 col-md-6 col-xs-12 mt-4">
                 <h3>Filter By Gender</h3>
                 <div className="gender d-flex justify-content-around">
                   <Form.Check
@@ -204,10 +213,11 @@ const Home = () => {
                   />
                 </div>
               </div>
-            </div>
+            {/* </div> */}
 
             {/* sort by value */}
-            <div className="filter_newold">
+            {/* <div className="filter_newold"> */}
+            <div className="col-lg-3 col-md-6 col-xs-12 mt-4">
               <h3>Short By Value</h3>
               <Dropdown className="text-center">
                 <Dropdown.Toggle
@@ -233,7 +243,8 @@ const Home = () => {
             </div>
 
             {/* filter by status */}
-            <div className="filter_status">
+            {/* <div className="filter_status"> */}
+            <div className="col-lg-3 col-md-6 col-xs-12 mt-4">
               <div className="status">
                 <h3>Filter By Status</h3>
                 <div className="status_radil d-flex justify-content-between flex-wrap">
@@ -262,6 +273,7 @@ const Home = () => {
                 </div>
               </div>
             </div>
+
           </div>
         </div>
 
