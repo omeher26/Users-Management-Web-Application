@@ -31,7 +31,7 @@ exports.userpost = async(req,res) =>{
             res.status(200).json(userData);
         }
     } catch (error) {
-        res.status(401).json(error)
+        res.status(401).json(error);
         console.log("catch block error")
     }
 
